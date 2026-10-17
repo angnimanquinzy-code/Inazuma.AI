@@ -1,1 +1,464 @@
 
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b18">
+<title>INAZUMA — Ton IA tout-en-un</title>
+
+<style>
+:root {
+  --bg:#080b18;
+  --panel:#11172b;
+  --line:#29365d;
+  --blue:#27d9ff;
+  --violet:#8b5cf6;
+  --text:#f5f7ff;
+  --muted:#a7b1d1;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  padding:16px;
+  background:radial-gradient(ellipse at top,#17245b,transparent 45%),var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+  padding:12px 0 20px;
+}
+.logo { font-size:23px;font-weight:bold;letter-spacing:3px; }
+.logo span { color:var(--blue); }
+.status { color:#4ade80;font-size:12px; }
+h1 { font-size:34px; }
+h2 { font-size:20px; }
+p { line-height:1.5; }
+.muted { color:var(--muted); }
+.panel {
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:18px;
+  margin:16px 0;
+}
+input,textarea,select {
+  width:100%;
+  padding:12px;
+  margin:7px 0 12px;
+  border-radius:9px;
+  border:1px solid #34436c;
+  background:#080d1d;
+  color:white;
+  font:inherit;
+}
+textarea { min-height:100px; }
+button {
+  padding:12px;
+  border:0;
+  border-radius:9px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.btn {
+  background:linear-gradient(100deg,var(--blue),#9a85ff);
+  color:#07101c;
+}
+.secondary {
+  background:#202b4a;
+  border:1px solid #3c4b79;
+  color:white;
+}
+.google { background:white;color:#222; }
+.full { width:100%;margin:5px 0; }
+.tabs { display:flex;gap:7px;flex-wrap:wrap;margin:18px 0; }
+.tab { background:#17203b;color:white;border:1px solid var(--line); }
+.tab.active { border-color:var(--blue); }
+.view { display:none; }
+.view.active { display:block; }
+.cards { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px; }
+.feature {
+  background:#0c1225;color:white;text-align:left;
+  border:1px solid var(--line);padding:14px;min-height:100px;
+}
+.messages { display:flex;flex-direction:column;gap:10px; }
+.message { padding:12px;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere; }
+.user { align-self:flex-end;background:#25386a; }
+.ai { align-self:flex-start;background:#0b1225;border:1px solid var(--line); }
+.notice { color:var(--muted);font-size:13px; }
+.hidden { display:none!important; }
+@media(min-width:750px) {
+  body { max-width:1100px;margin:auto; }
+  .cards { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo"><span>ϟ</span> INAZUMA</div>
+  <div class="status">● INTERFACE ACTIVE</div>
+</header>
+
+<section>
+  <p class="muted">MISSION IA • PROTOTYPE ÉVOLUTIF</p>
+  <h1>Une seule interface.<br><span style="color:var(--blue)">Plus de possibilités.</span></h1>
+  <p class="muted">Discute, explore tes idées et utilise tes outils IA depuis INAZUMA.</p>
+</section>
+
+<nav class="tabs">
+  <button class="tab active" data-view="home">Accueil</button>
+  <button class="tab" data-view="chat">Discussion</button>
+  <button class="tab" data-view="images">Images</button>
+  <button class="tab" data-view="voice">Voix</button>
+  <button class="tab" data-view="code">Code</button>
+  <button class="tab" data-view="multi">Multi-IA</button>
+  <button class="tab" data-view="about">À propos</button>
+</nav>
+
+<section class="panel" id="authCard">
+  <h2>🔐 Compte INAZUMA</h2>
+  <p id="authStatus" class="muted">Tu n'es pas encore connecté.</p>
+
+  <label for="authEmail">Adresse e-mail</label>
+  <input id="authEmail" type="email" placeholder="exemple@email.com" autocomplete="email">
+
+  <label for="authPassword">Mot de passe</label>
+  <input id="authPassword" type="password" placeholder="6 caractères minimum" autocomplete="current-password">
+
+  <button class="btn full" id="emailSignup" type="button">Créer un compte</button>
+  <button class="secondary full" id="emailLogin" type="button">Connexion par e-mail</button>
+  <button class="google full" id="googleLogin" type="button">Continuer avec Google</button>
+  <button class="secondary full hidden" id="logout" type="button">Se déconnecter</button>
+
+  <p id="authMessage" class="notice" role="status"></p>
+</section>
+
+<main>
+<section class="view active" id="home">
+  <div class="panel">
+    <h2>Bienvenue dans INAZUMA</h2>
+    <p class="muted">Choisis un outil pour commencer.</p>
+    <div class="cards">
+      <button class="feature" data-goto="chat">💬<h3>Discussion IA</h3>Poser une question</button>
+      <button class="feature" data-goto="images">🎨<h3>Images</h3>Préparer un prompt</button>
+      <button class="feature" data-goto="voice">🎙️<h3>Voix</h3>Dicter et écouter</button>
+      <button class="feature" data-goto="code">💻<h3>Assistant code</h3>Préparer une demande</button>
+      <button class="feature" data-goto="multi">🧠<h3>Multi-IA</h3>Choisir un fournisseur</button>
+      <button class="feature" data-goto="about">⚡<h3>Le projet</h3>À propos d'INAZUMA</button>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="chat">
+  <div class="panel">
+    <h2>💬 Discussion avec INAZUMA</h2>
+    <div class="messages" id="messages">
+      <div class="message ai">Bonjour ! Je suis INAZUMA. Pose-moi une question.</div>
+    </div>
+    <textarea id="chatInput" placeholder="Écris ton message..."></textarea>
+    <button class="btn full" id="sendBtn">Envoyer ↗</button>
+    <p id="chatStatus" class="notice"></p>
+  </div>
+</section>
+
+<section class="view" id="images">
+  <div class="panel">
+    <h2>🎨 Atelier d'images</h2>
+    <textarea id="imagePrompt" placeholder="Décris l'image que tu veux créer..."></textarea>
+    <button class="btn full" id="makeImagePrompt">Préparer le prompt</button>
+    <textarea id="imageResult" readonly placeholder="Le prompt apparaîtra ici..."></textarea>
+    <p id="imageStatus" class="notice"></p>
+  </div>
+</section>
+
+<section class="view" id="voice">
+  <div class="panel">
+    <h2>🎙️ Espace vocal</h2>
+    <textarea id="voiceText" placeholder="Écris ou dicte ton texte..."></textarea>
+    <button class="btn full" id="startDictation">Dicter avec le micro</button>
+    <button class="secondary full" id="speakText">Lire le texte</button>
+    <button class="secondary full" id="stopSpeech">Arrêter la voix</button>
+    <p id="voiceStatus" class="notice"></p>
+  </div>
+</section>
+
+<section class="view" id="code">
+  <div class="panel">
+    <h2>💻 Assistant de programmation</h2>
+    <textarea id="codeTask" placeholder="Décris le code ou le problème..."></textarea>
+    <button class="btn full" id="sendCodeTask">Envoyer à l'assistant</button>
+  </div>
+</section>
+
+<section class="view" id="multi">
+  <div class="panel">
+    <h2>🧠 Espace Multi-IA</h2>
+    <label for="modelSelect">Fournisseur</label>
+    <select id="modelSelect">
+      <option value="openai">OpenAI</option>
+      <option value="gemini">Google Gemini — à connecter</option>
+      <option value="claude">Claude — à connecter</option>
+      <option value="perplexity">Perplexity — à connecter</option>
+    </select>
+    <textarea id="multiPrompt" placeholder="Pose ta question..."></textarea>
+    <button class="btn full" id="sendMulti">Envoyer la demande</button>
+    <p id="multiStatus" class="notice"></p>
+  </div>
+</section>
+
+<section class="view" id="about">
+  <div class="panel">
+    <h2>⚡ À propos d'INAZUMA</h2>
+    <p>INAZUMA est un prototype d'interface IA tout-en-un.</p>
+    <p class="muted">Les connexions aux fournisseurs IA, la génération d'images et l'enregistrement des conversations nécessitent des intégrations supplémentaires.</p>
+    <p class="notice">Ne place jamais une clé secrète OpenAI dans ce fichier public.</p>
+  </div>
+</section>
+</main>
+
+<footer><p class="muted" style="text-align:center">INAZUMA · Ta vision. Une seule application.</p></footer>
+
+<script>
+/* Remplace cette valeur par l'URL HTTPS de ton Worker Cloudflare.
+   N'insère aucune clé API ici. */
+const WORKER_URL = "COLLE_ICI_URL_DE_TON_WORKER";
+
+const tabs = document.querySelectorAll(".tab");
+const views = document.querySelectorAll(".view");
+
+function showTab(name) {
+  views.forEach(v => v.classList.toggle("active", v.id === name));
+  tabs.forEach(t => t.classList.toggle("active", t.dataset.view === name));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+tabs.forEach(t => t.addEventListener("click", () => showTab(t.dataset.view)));
+document.querySelectorAll("[data-goto]").forEach(b =>
+  b.addEventListener("click", () => showTab(b.dataset.goto))
+);
+
+const messages = document.getElementById("messages");
+function addMessage(text, role) {
+  const div = document.createElement("div");
+  div.className = "message " + role;
+  div.textContent = text;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return div;
+}
+
+async function sendToAI(message) {
+  if (WORKER_URL.includes("COLLE_ICI")) {
+    throw new Error("L'adresse du Worker Cloudflare n'est pas encore configurée.");
+  }
+  const response = await fetch(WORKER_URL, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({message})
+  });
+  const raw = await response.text();
+  let data;
+  try { data = JSON.parse(raw); } catch { data = {reply:raw}; }
+  if (!response.ok) throw new Error(data.error || "Erreur Worker : " + response.status);
+  return data.reply || data.response ||
+    (data.choices?.[0]?.message?.content) || raw;
+}
+
+async function sendChatMessage(text) {
+  const prompt = text.trim();
+  if (!prompt) return;
+  addMessage(prompt,"user");
+  document.getElementById("chatInput").value = "";
+  showTab("chat");
+  const waiting = addMessage("INAZUMA réfléchit…","ai");
+  const button = document.getElementById("sendBtn");
+  button.disabled = true;
+  document.getElementById("chatStatus").textContent = "En cours...";
+  try {
+    waiting.textContent = await sendToAI(prompt);
+    document.getElementById("chatStatus").textContent = "Réponse reçue.";
+  } catch (error) {
+    waiting.textContent = "Impossible d'obtenir une réponse : " + error.message;
+    document.getElementById("chatStatus").textContent = "Vérifie la configuration du Worker.";
+  } finally { button.disabled = false; }
+}
+
+document.getElementById("sendBtn").addEventListener("click", () =>
+  sendChatMessage(document.getElementById("chatInput").value)
+);
+document.getElementById("chatInput").addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage(e.target.value);
+  }
+});
+
+document.getElementById("makeImagePrompt").addEventListener("click", () => {
+  const prompt = document.getElementById("imagePrompt").value.trim();
+  if (!prompt) {
+    document.getElementById("imageStatus").textContent = "Décris d'abord l'image.";
+    return;
+  }
+  document.getElementById("imageResult").value =
+    "Crée une image de haute qualité à partir de cette description : " + prompt;
+  document.getElementById("imageStatus").textContent =
+    "Prompt prêt. La génération réelle d'images reste à connecter.";
+});
+
+document.getElementById("speakText").addEventListener("click", () => {
+  const text = document.getElementById("voiceText").value.trim();
+  if (!text || !("speechSynthesis" in window)) {
+    document.getElementById("voiceStatus").textContent = "Texte vide ou lecture vocale indisponible.";
+    return;
+  }
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "fr-FR";
+  speechSynthesis.speak(utterance);
+});
+document.getElementById("stopSpeech").addEventListener("click", () => {
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+});
+document.getElementById("startDictation").addEventListener("click", () => {
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Recognition) {
+    document.getElementById("voiceStatus").textContent = "Dictée non disponible dans ce navigateur.";
+    return;
+  }
+  const recognition = new Recognition();
+  recognition.lang = "fr-FR";
+  recognition.onresult = e => {
+    const field = document.getElementById("voiceText");
+    field.value += (field.value ? " " : "") + e.results[0][0].transcript;
+  };
+  recognition.onerror = () => {
+    document.getElementById("voiceStatus").textContent = "Micro indisponible ou autorisation refusée.";
+  };
+  recognition.start();
+});
+document.getElementById("sendCodeTask").addEventListener("click", () => {
+  const task = document.getElementById("codeTask").value.trim();
+  if (task) sendChatMessage("Aide-moi à programmer et explique simplement : " + task);
+});
+document.getElementById("sendMulti").addEventListener("click", () => {
+  const model = document.getElementById("modelSelect").value;
+  const prompt = document.getElementById("multiPrompt").value.trim();
+  if (!prompt) return;
+  if (model !== "openai") {
+    document.getElementById("multiStatus").textContent =
+      "Ce fournisseur doit d'abord être connecté côté serveur. Choisis OpenAI pour le test.";
+    return;
+  }
+  sendChatMessage(prompt);
+});
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+
+/* Configuration de l'application Firebase.
+   Remplace seulement la valeur apiKey par celle de TA configuration Firebase. */
+const firebaseConfig = {
+  apiKey: "COLLE_ICI_TA_CLE_API_FIREBASE",
+  authDomain: "inazuma-ai-279d3.firebaseapp.com",
+  projectId: "inazuma-ai-279d3",
+  storageBucket: "inazuma-ai-279d3.firebasestorage.app",
+  messagingSenderId: "1068458023909",
+  appId: "1:1068458023909:web:6738a0603da0eaf8472d0c",
+  measurementId: "G-Q94B7W28NS"
+};
+
+const authMessage = document.getElementById("authMessage");
+const authStatus = document.getElementById("authStatus");
+const logoutButton = document.getElementById("logout");
+
+function showAuthMessage(message) {
+  authMessage.textContent = message;
+}
+function authError(code) {
+  const errors = {
+    "auth/email-already-in-use":"Cette adresse possède déjà un compte.",
+    "auth/invalid-email":"Adresse e-mail invalide.",
+    "auth/weak-password":"Le mot de passe doit contenir au moins 6 caractères.",
+    "auth/invalid-credential":"E-mail ou mot de passe incorrect.",
+    "auth/unauthorized-domain":"Ajoute inazuma-ai.pages.dev aux domaines autorisés dans Firebase.",
+    "auth/network-request-failed":"Connexion Internet indisponible. Réessaie."
+  };
+  return errors[code] || "Erreur Firebase : " + (code || "inconnue") + ".";
+}
+
+try {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const googleProvider = new GoogleAuthProvider();
+  const email = document.getElementById("authEmail");
+  const password = document.getElementById("authPassword");
+
+  document.getElementById("emailSignup").addEventListener("click", async () => {
+    if (!email.value.trim() || !password.value) {
+      showAuthMessage("Saisis ton e-mail et ton mot de passe.");
+      return;
+    }
+    try {
+      await createUserWithEmailAndPassword(auth,email.value.trim(),password.value);
+      showAuthMessage("Compte créé avec succès !");
+    } catch (error) { showAuthMessage(authError(error.code)); }
+  });
+
+  document.getElementById("emailLogin").addEventListener("click", async () => {
+    if (!email.value.trim() || !password.value) {
+      showAuthMessage("Saisis ton e-mail et ton mot de passe.");
+      return;
+    }
+    try {
+      await signInWithEmailAndPassword(auth,email.value.trim(),password.value);
+      showAuthMessage("Connexion réussie !");
+    } catch (error) { showAuthMessage(authError(error.code)); }
+  });
+
+  document.getElementById("googleLogin").addEventListener("click", async () => {
+    try { await signInWithRedirect(auth,googleProvider); }
+    catch (error) { showAuthMessage(authError(error.code)); }
+  });
+
+  try { await getRedirectResult(auth); }
+  catch (error) { showAuthMessage(authError(error.code)); }
+
+  onAuthStateChanged(auth,user => {
+    if (user) {
+      authStatus.textContent = "Connecté : " + (user.email || user.displayName || "Compte Google");
+      logoutButton.classList.remove("hidden");
+    } else {
+      authStatus.textContent = "Tu n'es pas encore connecté.";
+      logoutButton.classList.add("hidden");
+    }
+  });
+
+  logoutButton.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      showAuthMessage("Tu es déconnecté.");
+    } catch (error) { showAuthMessage(authError(error.code)); }
+  });
+} catch (error) {
+  showAuthMessage("Vérifie la clé apiKey de la configuration Firebase.");
+}
+</script>
+
+</body>
+</html>
